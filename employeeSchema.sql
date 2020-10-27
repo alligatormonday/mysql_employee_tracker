@@ -11,7 +11,7 @@ USE employee_DB;
 
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
+    dept_name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -31,20 +31,6 @@ CREATE TABLE employee_role (
     FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
-
--- INSERT INTO songs (title, artist , genre)
--- VALUES ("Limetree", "Bright Eyes", "Indie Rock");
-
--- INSERT INTO songs (title, artist, genre)
--- VALUES ("Artifact #1", "Conor Oberst", "Sad");
-
--- INSERT INTO songs (title, artist, genre)
--- VALUES ("Orange Peeler", "Horse Jumper of Love", "I don't know");
-
-
-
-
-
 -- * **employee**:
 
 --   * **id** - INT PRIMARY KEY
@@ -52,3 +38,21 @@ CREATE TABLE employee_role (
 --   * **last_name** - VARCHAR(30) to hold employee last name
 --   * **role_id** - INT to hold reference to role employee has
 --   * **manager_id** - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
+
+CREATE TABLE employee (
+    id INT NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(30) NOT NULL,
+    last_name DECIMAL NOT NULL,
+    role_id INT NOT NULL,
+    manager_id INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id) REFERENCES employee_role(id),
+    FOREIGN KEY (manager_id) REFERENCES employee(id)
+);
+
+
+INSERT INTO department (dept_name)
+VALUES ("Human Resources");
+
+INSERT INTO employee_role (title, salary, department_id)
+VALUES ("Manager", 100000.00, 1);

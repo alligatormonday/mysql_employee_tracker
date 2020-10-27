@@ -20,3 +20,16 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
     main()
 });
+
+// Inquirer -
+// Updating employee role
+// Which employee would you like to update?
+// Create query for selecting all employees, use the result of this query to make an inquirer question with a dropdown of choices
+// Once user selects which employee, you will then make another query to get list of roles and let that become a dropdown for user to choose out of. 
+// Then update that employee
+
+// console.table
+// pass into an array to visualize as table
+
+
+
