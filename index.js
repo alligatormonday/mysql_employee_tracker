@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const inquirer = require("inquirer")
 
 var connection = mysql.createConnection({
@@ -20,6 +20,24 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
     main()
 });
+
+function main() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "list",
+            message: "What you like to do?",
+            choices: ["View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role"],
+        }.then(answers => {
+            if (answers.list === "") {
+                // function()
+            } else if (answers.list === "") {
+                // function()
+            }
+        })
+    ])
+}
+
 
 // Inquirer -
 // Updating employee role
