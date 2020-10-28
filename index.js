@@ -27,7 +27,7 @@ function main() {
             type: "list",
             name: "list",
             message: "What you like to do?",
-            choices: ["View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role"],
+            choices: ["Add Department", "Remove Department", "View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role"],
         }.then(answers => {
             if (answers.list === "") {
                 // function()
@@ -37,6 +37,14 @@ function main() {
         })
     ])
 }
+
+// break choices out into particular function
+// think switch/case 
+
+
+
+
+
 
 
 // Inquirer -

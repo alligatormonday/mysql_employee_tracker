@@ -50,7 +50,6 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
-
 INSERT INTO department (dept_name)
 VALUES ("Human Resources");
 
