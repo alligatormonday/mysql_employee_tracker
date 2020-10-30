@@ -42,7 +42,7 @@ CREATE TABLE employee_role (
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
-    last_name DECIMAL NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
     role_id INT NOT NULL,
     manager_id INT NOT NULL,
     PRIMARY KEY (id),
@@ -50,11 +50,20 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
-INSERT INTO department (dept_name)
-VALUES ("Human Resources");
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Human", "Being")
+INSERT INTO department (dept_name)
+VALUES ("Human Resources"), ("Finance");
 
 INSERT INTO employee_role (title, salary, department_id)
-VALUES ("Manager", 100000.00, 1);
+VALUES ("Manager", 100000.00, 2);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Human 1", "Being 1", 1, 1);
+
+-- View Employee by Department
+SELECT first_name, last_name FROM employee 
+LEFT JOIN employee_role
+ON employee.role_id = employee_role.id
+LEFT JOIN department
+ON employee_role.department_id = department.id
+WHERE department.dept_name = "Finance";

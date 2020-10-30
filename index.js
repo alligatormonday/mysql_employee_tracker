@@ -28,15 +28,51 @@ function main() {
             name: "list",
             message: "What you like to do?",
             choices: ["Add Department", "Remove Department", "View All Employees", "View All Employees By Department", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role"],
-        }.then(answers => {
-            if (answers.list === "") {
-                // function()
-            } else if (answers.list === "") {
-                // function()
-            }
-        })
+        }
     ])
+    .then(answers => {
+        if (answers.list === "View All Employees By Department") {
+            // Inquirer prompt asking which department, users input?
+            viewAllByDepartment("Human Resources")
+        } 
+    })
 }
+
+// possibly create queries as one object and import
+// else if (answers.list === "") {
+//     // function()
+// }
+
+//  Create addPrompt/INSERT INTO
+function addDepartment() {
+
+}
+
+// Create readPrompt 
+
+function viewAllEmployees() {
+
+}
+
+function viewAllByDepartment(deptName) {
+    connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", [deptName], function(err, res){
+    if (err) throw err;
+    console.log(res);
+})
+}
+
+function viewAllEmployeesByManager() {
+
+}
+
+function viewAllRoles() {
+
+}
+
+// Create updatePrompt
+
+
+
 
 // break choices out into particular function
 // think switch/case 
