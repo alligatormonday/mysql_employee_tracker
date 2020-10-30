@@ -41,12 +41,6 @@ function main() {
 // break choices out into particular function
 // think switch/case 
 
-
-
-
-
-
-
 // Inquirer -
 // Updating employee role
 // Which employee would you like to update?
@@ -56,6 +50,3 @@ function main() {
 
 // console.table
 // pass into an array to visualize as table
-
-
-
