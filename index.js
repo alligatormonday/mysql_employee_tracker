@@ -21,64 +21,81 @@ connection.connect(function (err) {
     main()
 });
 
+
 function main() {
     inquirer.prompt([
         {
             type: "list",
-            name: "list",
+            name: "choice",
             message: "What you like to do?",
-            choices: ["View All Employees By Department", "Add Department", "Remove Department", "View All Employees", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role", "Exit"],
+            choices: ["View All Employees By Department", "View All Departments", "Add Department", "Remove Department", "View All Employees", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role", "Exit"],
         }
     ]).then(answers => {
-        if (answers.view === "View All Employees By Department") {
-            // Inquirer prompt asking which department, users input?
-            viewAllByDepartment("Human Resources");
-        } else if (answers.list === "Add Department") {
-            addDepartment();
-        } else if (answers.list === "Remove Department") {
-            removeDepartment();
-        } else if (answers.list === "View All Employees") {
-            viewAllEmployees();
-        } else if (answers.list === "View All Employees By Manager") {
-            viewAllEmployeesByManager();
-        } else if (answers.list === "Add Employee") {
-            addEmployee();
-        } else if (answers.list === "Remove Employee") {
-            removeEmployee();
-        } else if (answers.list === "Update Employee Role") {
-            updateEmployeeRole()
-        } else if (answers.list === "Update Employee Manager") {
-            updateEmployeeManager();
-        } else if (answers.list === "View All Roles") {
-            viewAllRoles();
-        } else if (answers.list === "Add Role") {
-            addRole();
-        } else if (answers.list === "Remove Role") {
-            removeRole()
-        } else if (answers.list === "Exit") {
+        if (answers.choice === "Exit") {
             connection.end();
-        }
+            // } else if (answers.choice === "View All Employees By Department") {
+            //     // Inquirer prompt asking which department, users input?
+            //     viewAllEmployeeByDepartment();
+        } else if (answers.choice === "View All Departments") {
+            viewAllDepartments();
+        } else if (answers.choice === "Add Department") {
+            addDepartment();
+        } else if (answers.choice === "Remove Department") {
+            removeDepartment();
+        } else if (answers.choice === "View All Roles") {
+            viewAllRoles();
+        } else if (answers.choice === "Add Role") {
+            addRole();
+        } else if (answers.choice === "Remove Role") {
+            removeRole()
+        } else if (answers.choice === "View All Employees") {
+            viewAllEmployees();
+        } else if (answers.choice === "View All Employees By Manager") {
+            viewAllEmployeesByManager();
+        } else if (answers.choice === "Add Employee") {
+            addEmployee();
+        } else if (answers.choice === "Remove Employee") {
+            removeEmployee();
+        } else if (answers.choice === "Update Employee Role") {
+            updateEmployeeRole()
+        } else if (answers.choice === "Update Employee Manager") {
+            updateEmployeeManager();
+        } 
 
     })
 }
 
 // possibly create queries as one object and import
-// else if (answers.list === "") {
+// else if (answers.choice === "") {
 //     // function()
 // }
 
-// Create readPrompt 
+// Create readPrompt
 
-function viewAllByDepartment() {
-    connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", function (err, res) {
+
+
+// function viewAllEmployeeByDepartment() {
+//     connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", function (err, res) {
+//         if (err) throw err;
+//         console.table(res);
+//         main()
+//     })
+// }
+
+function viewAllDepartments() {
+    connection.query("SELECT * FROM department", function (err, data) {
         if (err) throw err;
-        console.table(res);
+        console.table(data);
         main()
     })
 }
 
 function viewAllEmployees() {
-
+    connection.query("SELECT * FROM employee", function (err, data) {
+        if (err) throw err;
+        console.table(data)
+        main();
+    })
 }
 
 function viewAllEmployeesByManager() {
@@ -86,45 +103,81 @@ function viewAllEmployeesByManager() {
 }
 
 function viewAllRoles() {
+    connection.query("SELECT * FROM employee_role", function (err, data) {
+        if (err) throw err;
+        console.table(data)
+        main();
+    })
 
 }
 
 //  Create addPrompt/INSERT INTO
-function addDepartment() {
+function addDepartment(dept_name) {
     inquirer.prompt(
         {
             type: "input",
-            name: "deptName",
+            name: "dept_name",
             message: "Enter the name of the department you would like to add:"
         }
     ).then(answers => {
-        connection.query("INSERT INTO department (dept_name) VALUES (?)", [answers.deptName], function (err, res) {
+        connection.query("INSERT INTO department (dept_name) VALUES (?)", [answers.dept_name], function (err, res) {
             if (err) throw err;
             console.table(res);
             main();
         })
     })
-
 }
 
 function addRole() {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Enter the title of this role:"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Enter the salary of this role:"
+        },
+        {
+            type:"input",
+            name: "department_id",
+            message: "Enter the department that this role belongs to:"
+        }
+    ]).then(answers => {
+        connection.query("INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)", [answers.title, answers.salary, answers.department_id], function(err, data) {
+            if (err) throw err;
+            console.log(data);
+            main();
+        })
+    })
 }
 
 function addEmployee() {
     inquirer.prompt([
         {
             type: "input",
-            name: "firstName",
+            name: "first_name",
             message: "Enter the first name of the employee you would like to add:"
         },
         {
             type: "input",
-            name: "lastName",
+            name: "last_name",
             message: "Enter the last name of the employee you would like to add:"
         },
+        {
+            type: "input",
+            name: "role_id",
+            message: "Enter the role of the employee:"
+        },
+        {
+            type: "input",
+            name: "manager_id",
+            message: "Enter the manager of employee:"
+        }
     ]).then(answers => {
-        connection.query("INSERT INTO employee (first_name, last_name) VALUES (?, ?)", [answers.firstName, answers.lastName], function (err, res) {
+        connection.query("INSERT INTO employee SET", answers, function (err, res) {
             if (err) throw err;
             console.table(res);
             main();
