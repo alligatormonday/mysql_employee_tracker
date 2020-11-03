@@ -30,7 +30,7 @@ function main() {
             choices: ["View All Employees By Department", "Add Department", "Remove Department", "View All Employees", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role", "Exit"],
         }
     ]).then(answers => {
-        if (answers.list === "View All Employees By Department") {
+        if (answers.view === "View All Employees By Department") {
             // Inquirer prompt asking which department, users input?
             viewAllByDepartment("Human Resources");
         } else if (answers.list === "Add Department") {
@@ -72,7 +72,8 @@ function main() {
 function viewAllByDepartment() {
     connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", function (err, res) {
         if (err) throw err;
-        console.log(res);
+        console.table(res);
+        main()
     })
 }
 
@@ -97,13 +98,17 @@ function addDepartment() {
             message: "Enter the name of the department you would like to add:"
         }
     ).then(answers => {
-        connection.query("INSERT INTO department (dept_name) VALUES (?)", [answers.deptName],  function (err, res) {
+        connection.query("INSERT INTO department (dept_name) VALUES (?)", [answers.deptName], function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             main();
         })
     })
-    
+
+}
+
+function addRole() {
+
 }
 
 function addEmployee() {
@@ -112,23 +117,19 @@ function addEmployee() {
             type: "input",
             name: "firstName",
             message: "Enter the first name of the employee you would like to add:"
-    },
-    {
-        type: "input",
-        name: "lastName",
-        message: "Enter the last name of the employee you would like to add:"
-},
-]).then(answers => {
-        connection.query("INSERT INTO employee (first_name, last_name) VALUES (?, ?) WHERE ", [answers.firstName, answers.lastName],  function (err, res) {
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "Enter the last name of the employee you would like to add:"
+        },
+    ]).then(answers => {
+        connection.query("INSERT INTO employee (first_name, last_name) VALUES (?, ?)", [answers.firstName, answers.lastName], function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             main();
         })
     })
-
-}
-
-function addRole() {
 
 }
 
