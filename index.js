@@ -62,18 +62,15 @@ function main() {
     })
 }
 
-
 // possibly create queries as one object and import
 // else if (answers.list === "") {
 //     // function()
 // }
 
-
-
 // Create readPrompt 
 
-function viewAllByDepartment(deptName) {
-    connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", [deptName], function (err, res) {
+function viewAllByDepartment() {
+    connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", function (err, res) {
         if (err) throw err;
         console.log(res);
     })
@@ -82,8 +79,6 @@ function viewAllByDepartment(deptName) {
 function viewAllEmployees() {
 
 }
-
-
 
 function viewAllEmployeesByManager() {
 
@@ -95,12 +90,41 @@ function viewAllRoles() {
 
 //  Create addPrompt/INSERT INTO
 function addDepartment() {
-    connection.query("INSERT INTO department", function (req, res) {
-
+    inquirer.prompt(
+        {
+            type: "input",
+            name: "deptName",
+            message: "Enter the name of the department you would like to add:"
+        }
+    ).then(answers => {
+        connection.query("INSERT INTO department (dept_name) VALUES (?)", [answers.deptName],  function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            main();
+        })
     })
+    
 }
 
 function addEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "Enter the first name of the employee you would like to add:"
+    },
+    {
+        type: "input",
+        name: "lastName",
+        message: "Enter the last name of the employee you would like to add:"
+},
+]).then(answers => {
+        connection.query("INSERT INTO employee (first_name, last_name) VALUES (?, ?) WHERE ", [answers.firstName, answers.lastName],  function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            main();
+        })
+    })
 
 }
 
