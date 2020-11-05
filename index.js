@@ -28,11 +28,12 @@ function main() {
             type: "list",
             name: "choice",
             message: "What you like to do?",
-            choices: ["View All Employees By Department", "View All Departments", "Add Department", "Remove Department", "View All Employees", "View All Employees By Manager", "Add Employee", "Remove Employee", "Update Employee Role", "Update Employee Manager", "View All Roles", "Add Role", "Remove Role", "Exit"],
+            choices: ["View All Departments", "Add Department", "Remove Department", "View All Employees", "Add Employee", "Remove Employee", "Update Employee Role", "View All Roles", "Add Role", "Remove Role", "Exit"],
         }
     ]).then(answers => {
         if (answers.choice === "Exit") {
             connection.end();
+            // View Employees by department - not usable currently
             // } else if (answers.choice === "View All Employees By Department") {
             //     // Inquirer prompt asking which department, users input?
             //     viewAllEmployeeByDepartment();
@@ -50,37 +51,16 @@ function main() {
             removeRole()
         } else if (answers.choice === "View All Employees") {
             viewAllEmployees();
-        } else if (answers.choice === "View All Employees By Manager") {
-            viewAllEmployeesByManager();
         } else if (answers.choice === "Add Employee") {
             addEmployee();
         } else if (answers.choice === "Remove Employee") {
             removeEmployee();
         } else if (answers.choice === "Update Employee Role") {
             updateEmployeeRole()
-        } else if (answers.choice === "Update Employee Manager") {
-            updateEmployeeManager();
-        }
+        } 
 
     })
 }
-
-// possibly create queries as one object and import
-// else if (answers.choice === "") {
-//     // function()
-// }
-
-// Create readPrompt
-
-
-
-// function viewAllEmployeeByDepartment() {
-//     connection.query("SELECT first_name, last_name, department.dept_name FROM employee LEFT JOIN employee_role ON employee.role_id = employee_role.id LEFT JOIN department ON employee_role.department_id = department.id WHERE department.dept_name = ?; ", function (err, res) {
-//         if (err) throw err;
-//         console.table(res);
-//         main()
-//     })
-// }
 
 function viewAllDepartments() {
     connection.query("SELECT * FROM department", function (err, data) {
@@ -98,10 +78,6 @@ function viewAllEmployees() {
     })
 }
 
-function viewAllEmployeesByManager() {
-
-}
-
 function viewAllRoles() {
     connection.query("SELECT * FROM employee_role", function (err, data) {
         if (err) throw err;
@@ -111,7 +87,6 @@ function viewAllRoles() {
 
 }
 
-//  Create addPrompt/INSERT INTO
 function addDepartment() {
     inquirer.prompt(
         {
@@ -210,7 +185,6 @@ function addEmployee() {
     })
 }
 
-// Create updatePrompt
 function updateEmployeeRole() {
     connection.query("SELECT * FROM employee", function (err, data) {
         if (err) throw err;
@@ -253,24 +227,30 @@ function updateEmployeeRole() {
 })
 }
 
-
-
-// connection.query('UPDATE users SET foo = ?, bar = ?, baz = ? WHERE id = ?', ['a', 'b', 'c', userId], function (error, results, fields) {
-//     if (error) throw error;
-//     // ...
-// });
-//     // query employees and roles
-//     // inquirer prompts
-//     // update query
-// }
-
-function updateEmployeeManager() {
-
-}
-
-// Delete prompt
-
 function removeDepartment() {
+    connection.query("SELECT * FROM department", function (err, data) {
+        if (err) throw err;
+        let department = data.map(department => {
+            return { name: `${department.dept_name}`, value: department.id }
+        })
+        console.table(data);
+        inquirer.prompt([
+            
+            {
+                type: "list",
+                name: "delete_department",
+                message: "Choose the department you would like to delete:",
+                choices: department
+            },
+        ]).then(answers => {
+            console.log(answers)
+            connection.query("DELETE FROM department WHERE id = ?",  answers.delete_department, function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                main();
+            })
+        })
+    })
 
 }
 
@@ -301,18 +281,27 @@ function removeEmployee() {
 }
 
 function removeRole() {
-
+    connection.query("SELECT * FROM employee_role", function (err, data) {
+        if (err) throw err;
+        console.log(data)
+        let role = data.map(role => {
+            return { name: role.title, value: role.id }
+        })
+        inquirer.prompt([
+            
+            {
+                type: "list",
+                name: "delete_role",
+                message: "Choose the role you would like to remove:",
+                choices: role
+            },
+        ]).then(answers => {
+            console.log(answers)
+            connection.query("DELETE FROM employee_role WHERE id = ?",  answers.delete_role, function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                main();
+            })
+        })
+})
 }
-
-// break choices out into particular function
-// think switch/case 
-
-// Inquirer -
-// Updating employee role
-// Which employee would you like to update?
-// Create query for selecting all employees, use the result of this query to make an inquirer question with a dropdown of choices
-// Once user selects which employee, you will then make another query to get list of roles and let that become a dropdown for user to choose out of. 
-// Then update that employee
-
-// console.table
-// pass into an array to visualize as table

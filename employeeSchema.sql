@@ -27,8 +27,8 @@ CREATE TABLE employee_role (
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
     department_id INT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
 );
 
 -- * **employee**:
@@ -44,26 +44,26 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT NOT NULL,
-    manager_id INT NOT NULL,
+    manager_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (role_id) REFERENCES employee_role(id),
-    FOREIGN KEY (manager_id) REFERENCES employee(id)
+    FOREIGN KEY (role_id) REFERENCES employee_role(id) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );
 
-
 INSERT INTO department (dept_name)
-VALUES ("Human Resources"), ("Finance");
+VALUES ("Human Resources"), ("Finance"), ("Software Development");
 
 INSERT INTO employee_role (title, salary, department_id)
-VALUES ("Manager", 100000.00, 2);
+VALUES ("Manager", 500000.00, 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Human 1", "Being 1", 1, 1);
+VALUES ("Human", "Being", 1, 1);
 
--- View Employee by Department
-SELECT first_name, last_name FROM employee 
-LEFT JOIN employee_role
-ON employee.role_id = employee_role.id
-LEFT JOIN department
-ON employee_role.department_id = department.id
-WHERE department.dept_name = "Finance";
+
+-- -- View Employee by Department - not usable currently
+-- SELECT first_name, last_name FROM employee 
+-- LEFT JOIN employee_role
+-- ON employee.role_id = employee_role.id
+-- LEFT JOIN department
+-- ON employee_role.department_id = department.id
+-- WHERE department.dept_name = "Finance";
