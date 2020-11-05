@@ -275,7 +275,29 @@ function removeDepartment() {
 }
 
 function removeEmployee() {
-
+    connection.query("SELECT * FROM employee", function (err, data) {
+        if (err) throw err;
+        
+        let employee = data.map(employee => {
+            return { name: `${employee.first_name} ${employee.last_name}`, value: employee.id}
+        })
+        inquirer.prompt([
+            
+            {
+                type: "list",
+                name: "delete_employee",
+                message: "Choose the employee you would like to delete:",
+                choices: employee
+            },
+        ]).then(answers => {
+            console.log(answers)
+            connection.query("DELETE FROM employee WHERE id = ?",  answers.delete_employee, function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                main();
+            })
+        })
+})
 }
 
 function removeRole() {
