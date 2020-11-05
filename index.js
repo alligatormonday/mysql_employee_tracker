@@ -212,10 +212,57 @@ function addEmployee() {
 
 // Create updatePrompt
 function updateEmployeeRole() {
-// query employees and roles
-// inquirer prompts
-// update query
+    connection.query("SELECT * FROM employee", function (err, data) {
+        if (err) throw err;
+        
+        let employee = data.map(employee => {
+            return { name: `${employee.first_name} ${employee.last_name}`, value: employee.id}
+        })
+        console.log(employee)
+        connection.query("SELECT * FROM employee_role", function (err, data) {
+            if (err) throw err;
+            
+            let role = data.map(role => {
+                return { name: role.title, value: role.id }
+            })
+            console.log(role)
+        inquirer.prompt([
+            
+            {
+                type: "list",
+                name: "update_employee",
+                message: "Choose the employee who's role you would like to update:",
+                choices: employee
+            },
+
+            {
+                type: "list",
+                name: "update_role",
+                message: "Choose the role you would like the employee to have:",
+                choices: role
+            }
+        ]).then(answers => {
+            console.log(answers)
+            connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [answers.update_role, answers.update_employee], function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                main();
+            })
+        })
+    })
+})
 }
+
+
+
+// connection.query('UPDATE users SET foo = ?, bar = ?, baz = ? WHERE id = ?', ['a', 'b', 'c', userId], function (error, results, fields) {
+//     if (error) throw error;
+//     // ...
+// });
+//     // query employees and roles
+//     // inquirer prompts
+//     // update query
+// }
 
 function updateEmployeeManager() {
 
